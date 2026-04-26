@@ -1,0 +1,138 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": ["hello", "hi", "hey", "good morning", "good afternoon", "good evening", "howdy", "what's up", "greetings", "hi there"],
+      "responses": [
+        "Hello! I'm AURA, your college assistant. How can I help you today?",
+        "Hi there! Welcome to the college assistant. What would you like to know?",
+        "Hey! I'm AURA. Ask me anything about exams, fees, admissions, or courses!"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": ["bye", "goodbye", "see you", "see ya", "later", "take care", "exit", "quit", "logout"],
+      "responses": [
+        "Goodbye! Feel free to come back anytime you need help.",
+        "See you later! Good luck with your studies!",
+        "Take care! AURA is always here when you need assistance."
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": ["thanks", "thank you", "thank you so much", "thanks a lot", "appreciate it", "helpful", "great help"],
+      "responses": [
+        "You're welcome! Is there anything else I can help you with?",
+        "Happy to help! Let me know if you have more questions.",
+        "Glad I could assist! Feel free to ask anything else."
+      ]
+    },
+    {
+      "tag": "exam_schedule",
+      "patterns": ["when are exams", "exam schedule", "exam dates", "when is the exam", "exam timetable", "when do exams start", "exam time", "test schedule", "upcoming exams", "final exams", "midterm exams", "semester exams"],
+      "responses": [
+        "📅 **Exam Schedule 2024-25:**\n\n**Semester 1 (Mid-term):** October 15–22, 2024\n**Semester 1 (Final):** December 10–20, 2024\n**Semester 2 (Mid-term):** March 5–12, 2025\n**Semester 2 (Final):** May 20–30, 2025\n\nExact timetables are posted on the college notice board and official website 2 weeks before exams. Please check your email for hall ticket details."
+      ]
+    },
+    {
+      "tag": "fee_structure",
+      "patterns": ["fee structure", "fees", "how much is the fee", "tuition fee", "college fees", "annual fees", "semester fees", "total fees", "fee payment", "fee details", "cost of course"],
+      "responses": [
+        "💰 **Fee Structure (2024-25):**\n\n| Course | Annual Fee |\n|--------|------------|\n| BCA | ₹45,000 |\n| BBA | ₹40,000 |\n| B.Com | ₹35,000 |\n| B.Sc CS | ₹50,000 |\n| MCA | ₹60,000 |\n\n**Additional Charges:**\n• Exam Fee: ₹2,000/semester\n• Library: ₹1,500/year\n• Development: ₹3,000/year\n\n📌 Fees can be paid online via the student portal or at the finance office. Scholarships are available for eligible students."
+      ]
+    },
+    {
+      "tag": "admission",
+      "patterns": ["admission", "how to apply", "admission process", "how to get admission", "application form", "apply for admission", "enrollment", "join college", "admission requirements", "eligibility", "admission criteria", "new admission"],
+      "responses": [
+        "🎓 **Admission Process:**\n\n**Eligibility:**\n• UG Courses: 10+2 with minimum 50% marks\n• PG Courses: Relevant UG degree with 55% marks\n\n**Steps to Apply:**\n1. Visit the college website or office\n2. Fill out the application form (online/offline)\n3. Submit required documents\n4. Attend counseling/interview if applicable\n5. Pay admission fee to confirm seat\n\n**Required Documents:**\n• 10th & 12th marksheets\n• Transfer Certificate\n• Passport photos (4)\n• Aadhar card copy\n\n📅 **Admission Open:** June 1 – July 31 (for academic year 2025-26)\n📞 Contact: admissions@college.edu | 9876543210"
+      ]
+    },
+    {
+      "tag": "courses",
+      "patterns": ["courses", "what courses are available", "programs offered", "course list", "which courses", "tell me about courses", "available courses", "course details", "degree programs", "what can i study", "course information"],
+      "responses": [
+        "📚 **Courses Offered:**\n\n**Undergraduate Programs (3 Years):**\n• BCA – Bachelor of Computer Applications\n• BBA – Bachelor of Business Administration\n• B.Com – Bachelor of Commerce\n• B.Sc CS – Bachelor of Science (Computer Science)\n\n**Postgraduate Programs (2 Years):**\n• MCA – Master of Computer Applications\n• MBA – Master of Business Administration\n• M.Com – Master of Commerce\n\n**Diploma Courses (1 Year):**\n• Web Development\n• Data Analytics\n• Digital Marketing\n\n💡 All programs are affiliated with the State University and UGC approved."
+      ]
+    },
+    {
+      "tag": "bca",
+      "patterns": ["bca", "bca course", "bca details", "about bca", "bachelor of computer applications", "bca syllabus", "bca subjects"],
+      "responses": [
+        "💻 **BCA – Bachelor of Computer Applications:**\n\n**Duration:** 3 Years (6 Semesters)\n**Eligibility:** 10+2 with Math/Computer Science (50%+)\n**Annual Fee:** ₹45,000\n\n**Key Subjects:**\n• Programming (C, C++, Java, Python)\n• Data Structures & Algorithms\n• Database Management (MySQL)\n• Web Development (HTML, CSS, JS)\n• Computer Networks\n• Software Engineering\n• Artificial Intelligence (Final Year)\n\n**Career Opportunities:**\nSoftware Developer, Web Developer, Data Analyst, System Administrator, IT Consultant\n\n📌 Placement assistance provided. Average package: ₹3.5–8 LPA"
+      ]
+    },
+    {
+      "tag": "library",
+      "patterns": ["library", "library hours", "library timing", "library books", "how to use library", "library access", "borrow books"],
+      "responses": [
+        "📖 **College Library:**\n\n**Timings:**\n• Monday–Friday: 8:00 AM – 8:00 PM\n• Saturday: 9:00 AM – 5:00 PM\n• Sunday: Closed\n\n**Facilities:**\n• 20,000+ books and journals\n• Digital library access (E-resources)\n• Newspaper and magazine section\n• Study hall (50 seats)\n• Printing & photocopying\n\n**Borrowing Rules:**\n• Students: 3 books at a time (14 days)\n• Fine: ₹2/day for late return\n\n🔑 Library card issued during admission."
+      ]
+    },
+    {
+      "tag": "holidays",
+      "patterns": ["holidays", "holiday list", "college holidays", "when is holiday", "vacation", "summer vacation", "winter break", "festival holidays"],
+      "responses": [
+        "🗓️ **Holiday Calendar 2024-25:**\n\n**Summer Vacation:** May 15 – June 15, 2025\n**Winter Break:** Dec 25 – Jan 2, 2025\n**Diwali Break:** Oct 28 – Nov 3, 2024\n\n**Public Holidays include:**\n• Republic Day (Jan 26)\n• Independence Day (Aug 15)\n• Gandhi Jayanti (Oct 2)\n• All major festival holidays\n\n📌 Complete holiday list available on the college website and notice board."
+      ]
+    },
+    {
+      "tag": "hostel",
+      "patterns": ["hostel", "hostel facilities", "hostel fees", "accommodation", "dorm", "where to stay", "hostel availability", "boys hostel", "girls hostel"],
+      "responses": [
+        "🏠 **Hostel Facilities:**\n\n**Availability:**\n• Boys Hostel: 200 seats\n• Girls Hostel: 150 seats\n\n**Annual Hostel Fee:**\n• Triple Sharing: ₹40,000/year\n• Double Sharing: ₹55,000/year\n\n**Facilities Include:**\n• 24/7 security and CCTV\n• Wi-Fi connectivity\n• Mess (3 meals/day)\n• Indoor games room\n• Laundry facility\n• Generator backup\n\n📞 Hostel Office: hostel@college.edu | 9876500001\n📌 Apply for hostel at the time of admission. Limited seats available."
+      ]
+    },
+    {
+      "tag": "placement",
+      "patterns": ["placement", "campus placement", "job", "recruitment", "companies", "salary", "placement record", "career", "internship", "job opportunities"],
+      "responses": [
+        "🚀 **Placement & Career Cell:**\n\n**Placement Highlights 2023-24:**\n• 85% placement rate\n• 50+ companies visited campus\n• Highest Package: ₹12 LPA\n• Average Package: ₹5.5 LPA\n\n**Top Recruiters:**\nTCS, Infosys, Wipro, HCL, Cognizant, Accenture, IBM, Tech Mahindra, Capgemini\n\n**Services Offered:**\n• Resume building workshops\n• Mock interviews\n• Aptitude training\n• Soft skills development\n• Internship assistance\n\n📧 Contact: placement@college.edu"
+      ]
+    },
+    {
+      "tag": "contact",
+      "patterns": ["contact", "phone number", "email", "address", "where is the college", "location", "how to reach", "contact details", "get in touch"],
+      "responses": [
+        "📞 **Contact Information:**\n\n🏫 **College Address:**\n123 Education Road, Knowledge Park\nBengaluru, Karnataka – 560001\n\n📱 **Phone:** +91 9876543210 (Main Office)\n📧 **Email:** info@college.edu\n🌐 **Website:** www.college.edu\n\n**Department Contacts:**\n• Admissions: admissions@college.edu\n• Exams: exams@college.edu\n• Accounts: fees@college.edu\n• Placement: placement@college.edu\n\n⏰ **Office Hours:** Mon–Sat, 9:00 AM – 5:00 PM"
+      ]
+    },
+    {
+      "tag": "result",
+      "patterns": ["result", "marks", "grade", "scorecard", "how to check result", "semester result", "exam result", "check marks", "result date"],
+      "responses": [
+        "📊 **Exam Results:**\n\n**How to Check Results:**\n1. Visit the college website: www.college.edu\n2. Click on 'Student Portal'\n3. Login with your enrollment number\n4. Navigate to 'Results' section\n\n**Result Declaration Timeline:**\n• Mid-term results: Within 2 weeks of exam\n• Final results: Within 4 weeks of exam\n\n**For Revaluation:**\n• Apply within 15 days of result\n• Fee: ₹500/subject\n• Contact the Exam Cell for form\n\n📧 Exam queries: exams@college.edu"
+      ]
+    },
+    {
+      "tag": "scholarship",
+      "patterns": ["scholarship", "financial aid", "fee waiver", "merit scholarship", "government scholarship", "free education", "scholarship eligibility"],
+      "responses": [
+        "🎖️ **Scholarships Available:**\n\n**Merit Scholarships:**\n• Top 5% scorers: 50% fee waiver\n• 75–90% marks: 25% fee waiver\n\n**Government Schemes:**\n• SC/ST Scholarship (State Govt)\n• OBC Post-Matric Scholarship\n• National Merit Scholarship\n• Minority Scholarship\n\n**Sports Quota:**\nState/National level athletes may receive fee concessions\n\n**How to Apply:**\n1. Collect form from the scholarship cell\n2. Submit with supporting documents\n3. Deadline: August 31 each year\n\n📧 scholarships@college.edu"
+      ]
+    },
+    {
+      "tag": "attendance",
+      "patterns": ["attendance", "attendance requirement", "minimum attendance", "how much attendance", "attendance policy", "proxy attendance", "attendance percentage"],
+      "responses": [
+        "✅ **Attendance Policy:**\n\n**Minimum Requirement:** 75% attendance is mandatory to appear in exams.\n\n**Calculation:** (Classes Attended / Total Classes) × 100\n\n**Consequences of Low Attendance:**\n• Below 75%: Not allowed to sit in exams\n• Between 65–74%: Medical/official leave considered\n• Below 65%: Detained for the semester\n\n**How to Check Attendance:**\nLogin to the Student Portal → Dashboard → Attendance tab\n\n📌 Attendance is marked biometrically and updated daily."
+      ]
+    },
+    {
+      "tag": "about_college",
+      "patterns": ["about college", "tell me about the college", "college history", "about the institute", "college info", "college overview", "when was college established", "accreditation", "naac"],
+      "responses": [
+        "🏛️ **About Our College:**\n\n**Established:** 1998\n**Affiliation:** State University\n**Accreditation:** NAAC Grade 'A+' (2023)\n\n**At a Glance:**\n• 5,000+ Students enrolled\n• 200+ Faculty members\n• 15+ Departments\n• 50+ Clubs & Societies\n• 10-acre green campus\n• State-of-the-art labs\n\n**Vision:** To be a center of excellence in education, research, and innovation.\n\n**Mission:** Empowering students with knowledge, skills, and values to meet global challenges.\n\n🏆 Ranked among Top 50 colleges in the state."
+      ]
+    },
+    {
+      "tag": "unknown",
+      "patterns": [],
+      "responses": [
+        "I'm sorry, I didn't quite understand that. Could you rephrase your question? 🤔\n\nYou can ask me about:\n• 📅 Exam schedules\n• 💰 Fee structure\n• 🎓 Admissions\n• 📚 Courses\n• 🏠 Hostel\n• 🚀 Placements\n• 📞 Contact info",
+        "Hmm, I'm not sure about that. Try asking about exams, fees, admissions, courses, or other college-related topics!",
+        "I don't have information on that yet. Please contact the college office at info@college.edu or call 9876543210 for assistance."
+      ]
+    }
+  ]
+}
