@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AURA – AI Study Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/chat.css" />
+  <style>
+    /* GPT-specific overrides */
+    .bot-avatar { background: linear-gradient(135deg, #22c55e, #16a34a) !important; }
+    .chat-header { background: rgba(9,9,14,0.9); }
+    .header-info h2::after { content: " (AI)"; font-size: 0.7em; color: #22c55e; }
+    .status-dot { background: #22c55e !important; box-shadow: 0 0 6px #22c55e !important; }
+    .back-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: none; border: none; cursor: pointer;
+      color: var(--text-muted); font-size: 13px;
+      padding: 6px 10px; border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .back-btn:hover { background: var(--surface2); color: var(--text); }
+    .back-btn svg { width: 16px; height: 16px; }
+    .gpt-badge {
+      font-size: 10px; padding: 2px 8px; border-radius: 10px;
+      background: rgba(34,197,94,0.15); color: #22c55e;
+      border: 1px solid rgba(34,197,94,0.3);
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Sidebar ─────────────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="brand-mini">
+        <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2"/><path d="M12 26 L20 14 L28 26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.5 22h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="20" r="2" fill="currentColor"/></svg>
+        <span>AI Assistant</span>
+      </div>
+      <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+    </div>
+
+    <nav class="quick-nav">
+      <p class="nav-label">Quick Topics</p>
+      <button onclick="sendQuick('Give me study tips for exams')">📚 Study Tips</button>
+      <button onclick="sendQuick('How to prepare for exams effectively?')">📝 Exam Prep</button>
+      <button onclick="sendQuick('Career options after BCA')">🚀 Career Advice</button>
+      <button onclick="sendQuick('Tips for learning Python programming')">🐍 Python Help</button>
+      <button onclick="sendQuick('How to reduce study stress?')">🧘 Manage Stress</button>
+      <button onclick="sendQuick('Tips for coding interviews')">💻 Coding Tips</button>
+      <button onclick="sendQuick('How to build a good resume?')">📄 Resume Tips</button>
+      <button onclick="sendQuick('Best way to take notes in class')">📓 Note Taking</button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="avatar">{{ user.name[0].upper() }}</div>
+        <div>
+          <p class="uname">{{ user.name }}</p>
+          <p class="uemail">AI Study Assistant</p>
+        </div>
+      </div>
+      <div class="footer-actions">
+        <a href="/dashboard" style="text-decoration:none;">
+          <button>
+            <svg viewBox="0 0 20 20" fill="none"><path d="M3 9l9-7 9 7v11a1 1 0 01-1 1H4a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.5"/></svg>
+            Dashboard
+          </button>
+        </a>
+        <a href="/chat" style="text-decoration:none;">
+          <button>
+            <svg viewBox="0 0 20 20" fill="none"><path d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" stroke="currentColor" stroke-width="1.5"/></svg>
+            AURA Chatbot
+          </button>
+        </a>
+        <button onclick="logout()">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M13 3h4a1 1 0 011 1v12a1 1 0 01-1 1h-4M9 14l4-4-4-4M13 10H3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Logout
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main chat area ───────────────────────────────────────────────── -->
+  <main class="chat-main" id="chatMain">
+    <header class="chat-header">
+      <button class="menu-btn" onclick="toggleSidebar()">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+      <div class="header-info">
+        <div class="bot-avatar">
+          <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2"/><path d="M13 20c0-3.866 3.134-7 7-7s7 3.134 7 7-3.134 7-7 7-7-3.134-7-7z" stroke="currentColor" stroke-width="1.5"/><circle cx="20" cy="20" r="3" fill="currentColor"/></svg>
+        </div>
+        <div>
+          <h2>AI Study Assistant <span class="gpt-badge">SMART</span></h2>
+          <span class="status-dot"></span><small>Powered by AI · Always available</small>
+        </div>
+      </div>
+      <a href="/dashboard" style="text-decoration:none; margin-left:auto;">
+        <button class="back-btn">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M3 9l9-7 9 7v11a1 1 0 01-1 1H4a1 1 0 01-1-1z" stroke="currentColor" stroke-width="1.5"/></svg>
+          Dashboard
+        </button>
+      </a>
+    </header>
+
+    <div class="messages-wrap" id="messagesWrap">
+      <div class="messages" id="messages"></div>
+    </div>
+
+    <div class="typing-indicator hidden" id="typingIndicator">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+      <small>AI is thinking…</small>
+    </div>
+
+    <div class="input-area">
+      <div class="input-box">
+        <textarea
+          id="userInput"
+          placeholder="Ask anything — studies, coding, career, exams…"
+          rows="1"
+          onkeydown="handleKeydown(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button id="sendBtn" onclick="sendMessage()" aria-label="Send">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <p class="input-hint">Press <kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</p>
+    </div>
+  </main>
+
+  <div class="overlay hidden" id="overlay" onclick="toggleSidebar()"></div>
+
+  <script>
+    window.AURA_USER = {
+      name: "{{ user.name }}",
+      initial: "{{ user.name[0].upper() }}"
+    };
+
+    // Override API endpoint for GPT
+    window.CHAT_API = '/api/gpt_chat';
+    window.HISTORY_API = '/api/gpt_history';
+    window.BOT_NAME = 'AI Assistant';
+  </script>
+  <script src="/static/js/chat.js"></script>
+  <script>
+    // Override loadHistory for GPT
+    async function loadHistory() {
+      try {
+        const res  = await fetch('/api/gpt_history');
+        const data = await res.json();
+        if (data.success && data.history.length > 0) {
+          messagesEl.innerHTML = '';
+          data.history.forEach(msg => appendMessage(msg.role, msg.message, msg.timestamp, false));
+          scrollBottom();
+        } else {
+          showGPTWelcome();
+        }
+      } catch { showGPTWelcome(); }
+    }
+
+    function showGPTWelcome() {
+      const name = window.AURA_USER?.name?.split(' ')[0] || 'Student';
+      const card = document.createElement('div');
+      card.className = 'welcome-card';
+      card.innerHTML = `
+        <div class="wc-icon" style="background: linear-gradient(135deg,#22c55e,#16a34a);">
+          <svg viewBox="0 0 40 40" fill="none" width="32" height="32">
+            <circle cx="20" cy="20" r="18" stroke="white" stroke-width="2"/>
+            <circle cx="20" cy="20" r="7" stroke="white" stroke-width="2"/>
+            <circle cx="20" cy="20" r="2" fill="white"/>
+          </svg>
+        </div>
+        <h3>Hi ${escapeHtml(name)}, I'm your AI Study Assistant! 🧠</h3>
+        <p>Ask me anything about studies, coding, career advice, exam tips, or managing student life!</p>
+      `;
+      messagesEl.appendChild(card);
+      scrollBottom();
+    }
+
+    // Override sendMessage to use GPT endpoint
+    async function sendMessage() {
+      const text = document.getElementById('userInput').value.trim();
+      if (!text || isSending) return;
+
+      isSending = true;
+      document.getElementById('sendBtn').disabled = true;
+      document.getElementById('userInput').value = '';
+      document.getElementById('userInput').style.height = 'auto';
+
+      const wCard = messagesEl.querySelector('.welcome-card');
+      if (wCard) wCard.remove();
+
+      appendMessage('user', text);
+      showTyping();
+
+      try {
+        const res  = await fetch('/api/gpt_chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        await delay(600 + Math.random() * 400);
+        hideTyping();
+        if (data.success) appendMessage('bot', data.response);
+        else appendMessage('bot', "Sorry, I couldn't process that. Please try again!");
+      } catch {
+        await delay(400);
+        hideTyping();
+        appendMessage('bot', "⚠️ Connection error. Please check your internet.");
+      }
+
+      isSending = false;
+      document.getElementById('sendBtn').disabled = false;
+      document.getElementById('userInput').focus();
+    }
+
+    async function logout() {
+      const res = await fetch('/api/logout', { method: 'POST' });
+      const data = await res.json();
+      window.location.href = data.redirect || '/login';
+    }
+  </script>
+</body>
+</html>

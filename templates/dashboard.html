@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AURA – Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- ── Top navbar ─────────────────────────────────────────────────────── -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <img src="/static/images/izee_logo.png" alt="IZee" class="nav-logo" />
+    <span>AURA</span>
+  </div>
+  <div class="navbar-right">
+    <div class="nav-user">
+      <div class="nav-avatar">{{ user.name[0].upper() }}</div>
+      <div class="nav-info">
+        <span class="nav-name">{{ user.name }}</span>
+        <span class="nav-role">Student</span>
+      </div>
+    </div>
+    <button class="nav-logout" onclick="logout()">
+      <svg viewBox="0 0 20 20" fill="none"><path d="M13 3h4a1 1 0 011 1v12a1 1 0 01-1 1h-4M9 14l4-4-4-4M13 10H3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Logout
+    </button>
+  </div>
+</nav>
+
+<!-- ── Main content ───────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- Welcome section -->
+  <div class="welcome">
+    <h1>Welcome back, <span class="highlight">{{ user.name.split(' ')[0] }}</span> 👋</h1>
+    <p>What would you like to do today?</p>
+  </div>
+
+  <!-- Cards grid -->
+  <div class="cards-grid">
+
+    <!-- AURA Chatbot -->
+    <a href="/chat" class="card card-aura">
+      <div class="card-icon">🤖</div>
+      <div class="card-content">
+        <h3>AURA Chatbot</h3>
+        <p>Ask about exams, fees, admissions, courses and more college info</p>
+      </div>
+      <div class="card-arrow">→</div>
+      <div class="card-badge">College Info</div>
+    </a>
+
+    <!-- GPT AI Assistant -->
+    <a href="/gpt" class="card card-gpt">
+      <div class="card-icon">🧠</div>
+      <div class="card-content">
+        <h3>AI Study Assistant</h3>
+        <p>Get help with studies, coding, career advice and exam tips</p>
+      </div>
+      <div class="card-arrow">→</div>
+      <div class="card-badge">AI Powered</div>
+    </a>
+
+    <!-- Faculty DM -->
+    <div class="card card-dm" onclick="openDMModal()">
+      <div class="card-icon">💬</div>
+      <div class="card-content">
+        <h3>Faculty DM</h3>
+        <p>Send a direct message to any faculty member privately</p>
+      </div>
+      <div class="card-arrow">→</div>
+      <div class="card-badge" id="dmBadge" style="display:none;">New</div>
+    </div>
+
+    <!-- College Website -->
+    <a href="https://izeeinstitutions.com/jigani-campus/" target="_blank" class="card card-web">
+      <div class="card-icon">🌐</div>
+      <div class="card-content">
+        <h3>College Website</h3>
+        <p>Visit the official IZee Business School Jigani Campus website</p>
+      </div>
+      <div class="card-arrow">↗</div>
+      <div class="card-badge">Official</div>
+    </a>
+
+  </div>
+
+  <!-- Quick stats -->
+  <div class="stats-row">
+    <div class="stat">
+      <span class="stat-icon">📅</span>
+      <div>
+        <p class="stat-label">Next Exam</p>
+        <p class="stat-val">Check AURA →</p>
+      </div>
+    </div>
+    <div class="stat">
+      <span class="stat-icon">💰</span>
+      <div>
+        <p class="stat-label">Fee Info</p>
+        <p class="stat-val">Ask AURA →</p>
+      </div>
+    </div>
+    <div class="stat">
+      <span class="stat-icon">🎓</span>
+      <div>
+        <p class="stat-label">IZee Business School</p>
+        <p class="stat-val">Est. 2004 · 1500+ Students</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ── Faculty DM Modal ───────────────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="dmModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>💬 Send Message to Faculty</h3>
+      <button onclick="closeDMModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Step 1: Select Faculty -->
+      <div id="step1">
+        <p class="modal-label">Select a faculty member:</p>
+        <div class="faculty-list" id="facultyList">
+          <div class="loading-text">Loading faculty...</div>
+        </div>
+      </div>
+
+      <!-- Step 2: Write Message -->
+      <div id="step2" class="hidden">
+        <p class="modal-label">Sending to: <strong id="selectedFacultyName"></strong></p>
+        <textarea
+          id="dmMessage"
+          placeholder="Type your message here..."
+          rows="4"
+        ></textarea>
+        <div class="modal-actions">
+          <button class="btn-back" onclick="backToStep1()">← Back</button>
+          <button class="btn-send" onclick="sendDM()">Send Message</button>
+        </div>
+      </div>
+
+      <!-- Success -->
+      <div id="step3" class="hidden">
+        <div class="dm-success">
+          <div class="success-icon">✅</div>
+          <h4>Message Sent!</h4>
+          <p>Your message has been delivered to the faculty member.</p>
+          <button class="btn-send" onclick="closeDMModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedFacultyId = null;
+
+  // ── Logout ──────────────────────────────────────────────────────────────
+  async function logout() {
+    const res  = await fetch('/api/logout', { method: 'POST' });
+    const data = await res.json();
+    window.location.href = data.redirect || '/login';
+  }
+
+  // ── DM Modal ─────────────────────────────────────────────────────────────
+  async function openDMModal() {
+    document.getElementById('dmModal').classList.remove('hidden');
+    document.getElementById('step1').classList.remove('hidden');
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step3').classList.add('hidden');
+
+    // Load faculty list
+    const res  = await fetch('/api/faculty_list');
+    const data = await res.json();
+    const list = document.getElementById('facultyList');
+
+    if (data.faculty.length === 0) {
+      list.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No faculty members registered yet.</p>';
+      return;
+    }
+
+    list.innerHTML = data.faculty.map(f => `
+      <div class="faculty-item" onclick="selectFaculty(${f.id}, '${f.name}')">
+        <div class="faculty-avatar">${f.name[0]}</div>
+        <div>
+          <p class="faculty-name">${f.name}</p>
+          <p class="faculty-email">${f.email}</p>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function closeDMModal() {
+    document.getElementById('dmModal').classList.add('hidden');
+    document.getElementById('dmMessage').value = '';
+    selectedFacultyId = null;
+  }
+
+  function selectFaculty(id, name) {
+    selectedFacultyId = id;
+    document.getElementById('selectedFacultyName').textContent = name;
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+  }
+
+  function backToStep1() {
+    document.getElementById('step1').classList.remove('hidden');
+    document.getElementById('step2').classList.add('hidden');
+  }
+
+  async function sendDM() {
+    const message = document.getElementById('dmMessage').value.trim();
+    if (!message) { alert('Please type a message!'); return; }
+
+    const res  = await fetch('/api/send_dm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ receiver_id: selectedFacultyId, message })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('step2').classList.add('hidden');
+      document.getElementById('step3').classList.remove('hidden');
+    }
+  }
+
+  // Close modal on overlay click
+  document.getElementById('dmModal').addEventListener('click', function(e) {
+    if (e.target === this) closeDMModal();
+  });
+</script>
+</body>
+</html>

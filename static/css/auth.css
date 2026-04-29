@@ -261,3 +261,26 @@ html, body {
   color: var(--text-muted);
   line-height: 1.75;
 }
+/* ── Role Selector ───────────────────────────────── */
+.role-selector {
+  display: flex;
+  gap: 10px;
+}
+.role-option { flex: 1; cursor: pointer; }
+.role-option input[type="radio"] { display: none; }
+.role-card {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 6px;
+  padding: 12px;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 0.85rem; color: var(--text-muted);
+  transition: all 0.2s; cursor: pointer;
+}
+.role-icon { font-size: 1.5rem; }
+.role-option input:checked + .role-card {
+  border-color: var(--accent);
+  background: rgba(108,99,255,0.1);
+  color: var(--text);
+}

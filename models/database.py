@@ -75,7 +75,7 @@ def verify_password(password: str, hashed: str, salt: str) -> bool:
 
 # ─── User operations ──────────────────────────────────────────────────────────
 
-def create_user(name: str, email: str, password: str) -> dict:
+def create_user(name: str, email: str, password: str, role: str = 'student') -> dict:
     """Create a new user. Returns {'success': bool, 'message': str, 'user': dict|None}."""
     try:
         conn = get_connection()
@@ -91,8 +91,8 @@ def create_user(name: str, email: str, password: str) -> dict:
 
         hashed, salt = hash_password(password)
         cursor.execute(
-            "INSERT INTO users (name, email, password, salt) VALUES (?, ?, ?, ?)",
-            (name.strip(), email.lower().strip(), hashed, salt)
+            "INSERT INTO users (name, email, password, salt, role) VALUES (?, ?, ?, ?, ?)",
+            (name.strip(), email.lower().strip(), hashed, salt, role)
         )
         conn.commit()
         user_id = cursor.lastrowid
@@ -128,7 +128,12 @@ def authenticate_user(email: str, password: str) -> dict:
 
         return {
             'success': True,
-            'user': {'id': row['id'], 'name': row['name'], 'email': row['email']}
+            'user': {
+                'id': row['id'],
+                'name': row['name'],
+                'email': row['email'],
+                'role': row['role'] if 'role' in row.keys() else 'student'
+            }
         }
 
     except Exception as e:

@@ -93,6 +93,7 @@ async function handleRegister(e) {
   const name     = document.getElementById('regName').value.trim();
   const email    = document.getElementById('regEmail').value.trim();
   const password = document.getElementById('regPassword').value.trim();
+  const role = document.querySelector('input[name="role"]:checked')?.value || 'student';
 
   if (!name || !email || !password) {
     showAlert('Please fill in all fields.'); return;
@@ -110,7 +111,7 @@ async function handleRegister(e) {
     const res  = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password })
+      body: JSON.stringify({ name, email, password, role })
     });
     const data = await res.json();
 

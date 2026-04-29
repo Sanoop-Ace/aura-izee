@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AURA – Faculty Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/css/dashboard.css" />
+  <style>
+    .faculty-header { border-color: #f59e0b; }
+    .highlight { color: #f59e0b !important; }
+    .msg-list { display: flex; flex-direction: column; gap: 8px; }
+    .msg-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 16px; cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .msg-card:hover { border-color: #f59e0b; }
+    .msg-card.active { border-color: #f59e0b; background: rgba(245,158,11,0.05); }
+    .msg-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+    .msg-sender-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      display: grid; place-items: center;
+      font-weight: 700; font-size: 13px; color: white; flex-shrink: 0;
+    }
+    .msg-sender-name { font-weight: 500; font-size: 14px; color: var(--text); }
+    .msg-preview { font-size: 12px; color: var(--text-muted); }
+    .msg-time { font-size: 11px; color: var(--text-dim); margin-left: auto; }
+    .chat-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
+      height: 500px;
+    }
+    .chat-panel-header {
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      font-weight: 600; font-size: 14px; color: var(--text);
+      background: var(--surface2);
+    }
+    .chat-panel-messages {
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .chat-panel-messages::-webkit-scrollbar { width: 4px; }
+    .chat-panel-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .pm { display: flex; flex-direction: column; }
+    .pm.sent { align-items: flex-end; }
+    .pm.received { align-items: flex-start; }
+    .pm-bubble {
+      max-width: 75%; padding: 8px 12px; border-radius: 12px;
+      font-size: 13px; line-height: 1.5;
+    }
+    .pm.sent .pm-bubble {
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      color: white; border-bottom-right-radius: 3px;
+    }
+    .pm.received .pm-bubble {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); border-bottom-left-radius: 3px;
+    }
+    .pm-time { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+    .chat-panel-input {
+      padding: 12px; border-top: 1px solid var(--border);
+      display: flex; gap: 8px;
+    }
+    .chat-panel-input textarea {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 8px 12px; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 13px;
+      resize: none; outline: none;
+    }
+    .chat-panel-input textarea:focus { border-color: #f59e0b; }
+    .reply-btn {
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      border: none; border-radius: 10px; padding: 0 16px;
+      color: white; cursor: pointer; font-weight: 600;
+      font-family: 'DM Sans', sans-serif; font-size: 13px;
+    }
+    .empty-state {
+      text-align: center; padding: 3rem; color: var(--text-muted);
+      font-size: 14px;
+    }
+    .two-col { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+    @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <img src="/static/images/izee_logo.png" alt="IZee" class="nav-logo" />
+    <span>Faculty Panel</span>
+  </div>
+  <div class="navbar-right">
+    <div class="nav-user">
+      <div class="nav-avatar" style="background: linear-gradient(135deg,#f59e0b,#f97316);">
+        {{ user.name[0].upper() }}
+      </div>
+      <div class="nav-info">
+        <span class="nav-name">{{ user.name }}</span>
+        <span class="nav-role" style="color:#f59e0b;">Faculty</span>
+      </div>
+    </div>
+    <button class="nav-logout" onclick="logout()">
+      <svg viewBox="0 0 20 20" fill="none"><path d="M13 3h4a1 1 0 011 1v12a1 1 0 01-1 1h-4M9 14l4-4-4-4M13 10H3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Logout
+    </button>
+  </div>
+</nav>
+
+<main class="main">
+  <div class="welcome">
+    <h1>Faculty Dashboard <span class="highlight">👩‍🏫</span></h1>
+    <p>Manage student messages and replies</p>
+  </div>
+
+  {% if students|length == 0 %}
+  <div class="empty-state">
+    <p style="font-size:48px;">💬</p>
+    <p>No student messages yet.</p>
+    <p style="font-size:12px; margin-top:8px;">When students send you messages, they'll appear here.</p>
+  </div>
+  {% else %}
+  <div class="two-col">
+
+    <!-- Student list -->
+    <div>
+      <p style="font-size:12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px;">Students ({{ students|length }})</p>
+      <div class="msg-list" id="studentList">
+        {% for student in students %}
+        <div class="msg-card" id="card-{{ student.id }}" onclick="loadConversation({{ student.id }}, '{{ student.name }}')">
+          <div class="msg-card-header">
+            <div class="msg-sender-avatar">{{ student.name[0].upper() }}</div>
+            <span class="msg-sender-name">{{ student.name }}</span>
+          </div>
+          <p class="msg-preview">{{ student.email }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Chat panel -->
+    <div>
+      <p style="font-size:12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px;">Conversation</p>
+      <div class="chat-panel">
+        <div class="chat-panel-header" id="chatPanelHeader">
+          Select a student to view conversation
+        </div>
+        <div class="chat-panel-messages" id="chatPanelMessages">
+          <div class="empty-state">
+            <p>👈 Select a student from the left</p>
+          </div>
+        </div>
+        <div class="chat-panel-input">
+          <textarea id="replyInput" placeholder="Type your reply..." rows="1"></textarea>
+          <button class="reply-btn" onclick="sendReply()">Send</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  {% endif %}
+
+</main>
+
+<script>
+  let activeStudentId = null;
+
+  async function loadConversation(studentId, studentName) {
+    activeStudentId = studentId;
+
+    // Highlight active card
+    document.querySelectorAll('.msg-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('card-' + studentId)?.classList.add('active');
+
+    document.getElementById('chatPanelHeader').textContent = '💬 ' + studentName;
+
+    const res  = await fetch('/api/dm_history/' + studentId);
+    const data = await res.json();
+    const container = document.getElementById('chatPanelMessages');
+
+    if (!data.messages || data.messages.length === 0) {
+      container.innerHTML = '<div class="empty-state"><p>No messages yet</p></div>';
+      return;
+    }
+
+    const myId = {{ session.get('user_id', 0) if session else 0 }};
+    container.innerHTML = data.messages.map(m => {
+      const isSent = m.sender_id != studentId;
+      const time   = new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return `
+        <div class="pm ${isSent ? 'sent' : 'received'}">
+          <div class="pm-bubble">${escapeHtml(m.message)}</div>
+          <div class="pm-time">${time}</div>
+        </div>
+      `;
+    }).join('');
+
+    container.scrollTop = container.scrollHeight;
+  }
+
+  async function sendReply() {
+    if (!activeStudentId) { alert('Select a student first!'); return; }
+    const message = document.getElementById('replyInput').value.trim();
+    if (!message) return;
+
+    const res  = await fetch('/api/faculty_reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ receiver_id: activeStudentId, message })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      document.getElementById('replyInput').value = '';
+      // Reload conversation
+      const card = document.getElementById('card-' + activeStudentId);
+      const name = card?.querySelector('.msg-sender-name')?.textContent || '';
+      loadConversation(activeStudentId, name);
+    }
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  async function logout() {
+    const res  = await fetch('/api/logout', { method: 'POST' });
+    const data = await res.json();
+    window.location.href = data.redirect || '/login';
+  }
+
+  // Send reply on Enter
+  document.getElementById('replyInput')?.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendReply(); }
+  });
+</script>
+</body>
+</html>
