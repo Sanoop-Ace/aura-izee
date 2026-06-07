@@ -9,15 +9,28 @@ import random
 import re
 import nltk
 
+NLTK_DATA_DIR = os.environ.get(
+    'NLTK_DATA',
+    os.path.join(os.path.dirname(__file__), 'nltk_data')
+)
+os.makedirs(NLTK_DATA_DIR, exist_ok=True)
+if NLTK_DATA_DIR not in nltk.data.path:
+    nltk.data.path.insert(0, NLTK_DATA_DIR)
+
 # ─── Download required NLTK data (runs once) ────────────────────────────────
 def download_nltk_data():
     """Download required NLTK resources if not already present."""
-    resources = ['punkt', 'stopwords', 'wordnet', 'averaged_perceptron_tagger']
-    for resource in resources:
+    resources = {
+        'punkt': 'tokenizers/punkt',
+        'stopwords': 'corpora/stopwords',
+        'wordnet': 'corpora/wordnet',
+        'averaged_perceptron_tagger': 'taggers/averaged_perceptron_tagger',
+    }
+    for resource, lookup_path in resources.items():
         try:
-            nltk.data.find(f'tokenizers/{resource}' if resource == 'punkt' else f'corpora/{resource}')
+            nltk.data.find(lookup_path)
         except LookupError:
-            nltk.download(resource, quiet=True)
+            nltk.download(resource, download_dir=NLTK_DATA_DIR, quiet=True)
 
 download_nltk_data()
 

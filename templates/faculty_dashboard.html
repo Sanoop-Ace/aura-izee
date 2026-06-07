@@ -82,7 +82,47 @@
       font-size: 14px;
     }
     .two-col { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+    .editor-panel {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 18px; margin-top: 20px;
+    }
+    .editor-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 16px;
+    }
+    .editor-header h2 {
+      font-family: 'Syne', sans-serif; font-size: 1.15rem;
+      letter-spacing: -0.02em;
+    }
+    .save-status { color: var(--text-muted); font-size: 12px; }
+    .editor-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+      color: var(--text-muted); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .field input,
+    .field textarea {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text); outline: none;
+      padding: 10px 12px; font: inherit; font-size: 13px;
+    }
+    .field textarea { min-height: 130px; resize: vertical; }
+    .field input:focus,
+    .field textarea:focus { border-color: #f59e0b; }
+    .save-dashboard-btn {
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      border: none; border-radius: 10px; color: white; cursor: pointer;
+      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+      padding: 10px 16px;
+    }
+    .save-dashboard-btn:disabled { opacity: 0.55; cursor: not-allowed; }
     @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) { .editor-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -115,14 +155,14 @@
 <main class="main">
   <div class="welcome">
     <h1>Faculty Dashboard <span class="highlight">👩‍🏫</span></h1>
-    <p>Manage student messages and replies</p>
+    <p>Manage student messages, attendance, fees, exam results and time table</p>
   </div>
 
   {% if students|length == 0 %}
   <div class="empty-state">
     <p style="font-size:48px;">💬</p>
-    <p>No student messages yet.</p>
-    <p style="font-size:12px; margin-top:8px;">When students send you messages, they'll appear here.</p>
+    <p>No student accounts yet.</p>
+    <p style="font-size:12px; margin-top:8px;">When students register, they'll appear here.</p>
   </div>
   {% else %}
   <div class="two-col">
@@ -132,7 +172,7 @@
       <p style="font-size:12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px;">Students ({{ students|length }})</p>
       <div class="msg-list" id="studentList">
         {% for student in students %}
-        <div class="msg-card" id="card-{{ student.id }}" onclick="loadConversation({{ student.id }}, '{{ student.name }}')">
+        <div class="msg-card" id="card-{{ student.id }}" onclick='selectStudent({{ student.id }}, {{ student.name|tojson }})'>
           <div class="msg-card-header">
             <div class="msg-sender-avatar">{{ student.name[0].upper() }}</div>
             <span class="msg-sender-name">{{ student.name }}</span>
@@ -163,12 +203,90 @@
     </div>
 
   </div>
+
+  <section class="editor-panel">
+    <div class="editor-header">
+      <div>
+        <p class="section-kicker">Student dashboard editor</p>
+        <h2 id="editorTitle">Select a student to edit dashboard</h2>
+      </div>
+      <span class="save-status" id="saveStatus">Waiting for selection</span>
+    </div>
+
+    <div class="editor-grid">
+      <div class="field">
+        <label for="attendancePercent">Attendance %</label>
+        <input id="attendancePercent" type="number" min="0" max="100" disabled />
+      </div>
+      <div class="field">
+        <label for="attendanceNote">Attendance note</label>
+        <input id="attendanceNote" type="text" disabled />
+      </div>
+      <div class="field">
+        <label for="feeStatus">Fee status</label>
+        <input id="feeStatus" type="text" disabled />
+      </div>
+      <div class="field">
+        <label for="feeBalance">Fee balance</label>
+        <input id="feeBalance" type="text" disabled />
+      </div>
+      <div class="field">
+        <label for="feePaid">Fee paid</label>
+        <input id="feePaid" type="text" disabled />
+      </div>
+      <div class="field">
+        <label for="feePaidPercent">Fee paid %</label>
+        <input id="feePaidPercent" type="number" min="0" max="100" disabled />
+      </div>
+      <div class="field">
+        <label for="feeNote">Fee note</label>
+        <input id="feeNote" type="text" disabled />
+      </div>
+      <div class="field">
+        <label for="nextExamTitle">Next exam</label>
+        <input id="nextExamTitle" type="text" disabled />
+      </div>
+      <div class="field">
+        <label for="nextExamDate">Exam date and time</label>
+        <input id="nextExamDate" type="datetime-local" disabled />
+      </div>
+      <div class="field">
+        <label for="examResult">Exam result</label>
+        <input id="examResult" type="text" disabled />
+      </div>
+      <div class="field">
+        <label for="gpa">GPA</label>
+        <input id="gpa" type="text" disabled />
+      </div>
+      <div class="field">
+        <label for="cgpa">CGPA</label>
+        <input id="cgpa" type="text" disabled />
+      </div>
+      <div class="field full">
+        <label for="timetable">Time table</label>
+        <textarea id="timetable" placeholder="Mon 09:30 - Business Analytics" disabled></textarea>
+      </div>
+      <div class="field full">
+        <button class="save-dashboard-btn" id="saveDashboardBtn" onclick="saveStudentDashboard()" disabled>Save Student Dashboard</button>
+      </div>
+    </div>
+  </section>
   {% endif %}
 
 </main>
 
 <script>
   let activeStudentId = null;
+  const editorFields = [
+    'attendancePercent', 'attendanceNote', 'feeStatus', 'feeBalance',
+    'feePaid', 'feePaidPercent', 'feeNote', 'nextExamTitle', 'nextExamDate',
+    'examResult', 'gpa', 'cgpa', 'timetable'
+  ];
+
+  async function selectStudent(studentId, studentName) {
+    await loadConversation(studentId, studentName);
+    await loadStudentDashboard(studentId, studentName);
+  }
 
   async function loadConversation(studentId, studentName) {
     activeStudentId = studentId;
@@ -188,7 +306,7 @@
       return;
     }
 
-    const myId = {{ session.get('user_id', 0) if session else 0 }};
+    const myId = 0;
     container.innerHTML = data.messages.map(m => {
       const isSent = m.sender_id != studentId;
       const time   = new Date(m.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -201,6 +319,67 @@
     }).join('');
 
     container.scrollTop = container.scrollHeight;
+  }
+
+  async function loadStudentDashboard(studentId, studentName) {
+    document.getElementById('editorTitle').textContent = 'Editing ' + studentName;
+    document.getElementById('saveStatus').textContent = 'Loading dashboard...';
+
+    const res = await fetch('/api/student_dashboard/' + studentId);
+    const data = await res.json();
+
+    if (!data.success) {
+      document.getElementById('saveStatus').textContent = data.message || 'Unable to load';
+      return;
+    }
+
+    const d = data.dashboard;
+    document.getElementById('attendancePercent').value = d.attendance_percent;
+    document.getElementById('attendanceNote').value = d.attendance_note;
+    document.getElementById('feeStatus').value = d.fee_status;
+    document.getElementById('feeBalance').value = d.fee_balance;
+    document.getElementById('feePaid').value = d.fee_paid;
+    document.getElementById('feePaidPercent').value = d.fee_paid_percent;
+    document.getElementById('feeNote').value = d.fee_note;
+    document.getElementById('nextExamTitle').value = d.next_exam_title;
+    document.getElementById('nextExamDate').value = d.next_exam_date;
+    document.getElementById('examResult').value = d.exam_result;
+    document.getElementById('gpa').value = d.gpa;
+    document.getElementById('cgpa').value = d.cgpa;
+    document.getElementById('timetable').value = d.timetable;
+
+    editorFields.forEach(id => document.getElementById(id).disabled = false);
+    document.getElementById('saveDashboardBtn').disabled = false;
+    document.getElementById('saveStatus').textContent = 'Ready to edit';
+  }
+
+  async function saveStudentDashboard() {
+    if (!activeStudentId) { alert('Select a student first!'); return; }
+
+    document.getElementById('saveStatus').textContent = 'Saving...';
+    const payload = {
+      attendance_percent: document.getElementById('attendancePercent').value,
+      attendance_note: document.getElementById('attendanceNote').value,
+      fee_status: document.getElementById('feeStatus').value,
+      fee_balance: document.getElementById('feeBalance').value,
+      fee_paid: document.getElementById('feePaid').value,
+      fee_paid_percent: document.getElementById('feePaidPercent').value,
+      fee_note: document.getElementById('feeNote').value,
+      next_exam_title: document.getElementById('nextExamTitle').value,
+      next_exam_date: document.getElementById('nextExamDate').value,
+      exam_result: document.getElementById('examResult').value,
+      gpa: document.getElementById('gpa').value,
+      cgpa: document.getElementById('cgpa').value,
+      timetable: document.getElementById('timetable').value
+    };
+
+    const res = await fetch('/api/student_dashboard/' + activeStudentId, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    document.getElementById('saveStatus').textContent = data.success ? 'Saved successfully' : (data.message || 'Save failed');
   }
 
   async function sendReply() {

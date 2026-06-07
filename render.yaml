@@ -2,8 +2,38 @@ services:
   - type: web
     name: aura-izee
     runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
+    plan: starter
+    buildCommand: pip install -r requirements.txt && python -m nltk.downloader -d nltk_data punkt stopwords wordnet averaged_perceptron_tagger
+    startCommand: gunicorn --workers 1 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT app:app
+    healthCheckPath: /login
+    disk:
+      name: aura-data
+      mountPath: /var/data
+      sizeGB: 1
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: AURA_DB_PATH
+        value: /var/data/aura.db
+      - key: NLTK_DATA
+        value: /opt/render/project/src/nltk_data
       - key: SECRET_KEY
-        value: izee-aura-secret-2024
+        generateValue: true
+      - key: SESSION_COOKIE_SECURE
+        value: "true"
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USE_TLS
+        value: "true"
+      - key: MAIL_USE_SSL
+        value: "false"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_DEFAULT_SENDER
+        sync: false
+      - key: MAIL_SENDER_NAME
+        value: AURA - IZee

@@ -69,15 +69,15 @@
       <div class="card-badge">AI Powered</div>
     </a>
 
-    <!-- Faculty DM -->
-    <div class="card card-dm" onclick="openDMModal()">
+   <!-- Faculty DM -->
+    <div class="card card-dm" onclick="openDMOptions()">
       <div class="card-icon">💬</div>
       <div class="card-content">
         <h3>Faculty DM</h3>
-        <p>Send a direct message to any faculty member privately</p>
+        <p>Send a direct message or view your inbox with faculty replies</p>
       </div>
       <div class="card-arrow">→</div>
-      <div class="card-badge" id="dmBadge" style="display:none;">New</div>
+      <div class="card-badge" id="dmBadge">Inbox</div>
     </div>
 
     <!-- College Website -->
@@ -93,30 +93,104 @@
 
   </div>
 
-  <!-- Quick stats -->
-  <div class="stats-row">
-    <div class="stat">
-      <span class="stat-icon">📅</span>
+  <!-- Academic snapshot -->
+  <section class="academic-panel" aria-label="Academic snapshot">
+    <div class="section-heading">
       <div>
-        <p class="stat-label">Next Exam</p>
-        <p class="stat-val">Check AURA →</p>
+        <p class="section-kicker">Student overview</p>
+        <h2>Academic Snapshot</h2>
       </div>
+      <span class="live-pill">Faculty updated</span>
     </div>
-    <div class="stat">
-      <span class="stat-icon">💰</span>
-      <div>
-        <p class="stat-label">Fee Info</p>
-        <p class="stat-val">Ask AURA →</p>
+
+    <div class="snapshot-grid">
+      <article class="metric-card attendance-card">
+        <div class="metric-top">
+          <span class="metric-icon">A</span>
+          <span class="metric-status {% if dashboard.attendance_percent >= 75 %}success{% else %}warning{% endif %}">
+            {% if dashboard.attendance_percent >= 75 %}Safe{% else %}Low{% endif %}
+          </span>
+        </div>
+        <p class="metric-label">Attendance</p>
+        <div class="metric-value">{{ dashboard.attendance_percent }}%</div>
+        <div class="progress-track">
+          <span class="progress-fill attendance-fill" style="width: {{ dashboard.attendance_percent }}%;"></span>
+        </div>
+        <p class="metric-note">{{ dashboard.attendance_note }}</p>
+      </article>
+
+      <article class="metric-card fee-card">
+        <div class="metric-top">
+          <span class="metric-icon">₹</span>
+          <span class="metric-status warning">{{ dashboard.fee_status }}</span>
+        </div>
+        <p class="metric-label">Fee Status</p>
+        <div class="metric-value">{{ dashboard.fee_balance }}</div>
+        <p class="metric-note">{{ dashboard.fee_note }}</p>
+        <div class="fee-row">
+          <span>Paid: {{ dashboard.fee_paid }}</span>
+          <span>{{ dashboard.fee_paid_percent }}%</span>
+        </div>
+      </article>
+
+      <article class="metric-card exam-card">
+        <div class="metric-top">
+          <span class="metric-icon">EX</span>
+          <span class="metric-status info">Upcoming</span>
+        </div>
+        <p class="metric-label">Next Exam</p>
+        <div class="metric-value" id="examCountdown">-- days</div>
+        <p class="metric-note">{{ dashboard.next_exam_title }}</p>
+        <div class="mini-countdown">
+          <span id="countdownHours">--h</span>
+          <span id="countdownMinutes">--m</span>
+          <span id="countdownSeconds">--s</span>
+        </div>
+      </article>
+
+      <article class="metric-card gpa-card">
+        <div class="metric-top">
+          <span class="metric-icon">R</span>
+          <span class="metric-status success">On track</span>
+        </div>
+        <p class="metric-label">Exam Results</p>
+        <div class="metric-value result-value">{{ dashboard.exam_result }}</div>
+        <div class="gpa-stack">
+          <div>
+            <span>Sem GPA</span>
+            <strong>{{ dashboard.gpa }}</strong>
+          </div>
+          <div>
+            <span>CGPA</span>
+            <strong>{{ dashboard.cgpa }}</strong>
+          </div>
+        </div>
+        <p class="metric-note">Updated by faculty</p>
+      </article>
+    </div>
+
+    <article class="assignment-panel timetable-panel">
+      <div class="assignment-head">
+        <div>
+          <p class="section-kicker">Schedule</p>
+          <h3>Time Table</h3>
+        </div>
+        <span>Weekly plan</span>
       </div>
-    </div>
-    <div class="stat">
-      <span class="stat-icon">🎓</span>
-      <div>
-        <p class="stat-label">IZee Business School</p>
-        <p class="stat-val">Est. 2004 · 1500+ Students</p>
+      <div class="assignment-list">
+        {% for row in dashboard.timetable.split('\n') if row.strip() %}
+          {% set parts = row.split(' - ', 1) %}
+          <div class="assignment-item">
+            <div>
+              <strong>{{ parts[0] }}</strong>
+              <p>{{ parts[1] if parts|length > 1 else 'Class schedule' }}</p>
+            </div>
+            <span>Class</span>
+          </div>
+        {% endfor %}
       </div>
-    </div>
-  </div>
+    </article>
+  </section>
 
 </main>
 
@@ -163,43 +237,55 @@
     </div>
   </div>
 </div>
-
 <script>
   let selectedFacultyId = null;
 
-  // ── Logout ──────────────────────────────────────────────────────────────
+  // ── Logout ────────────────────────────────────────────────────────────────
   async function logout() {
     const res  = await fetch('/api/logout', { method: 'POST' });
     const data = await res.json();
     window.location.href = data.redirect || '/login';
   }
 
-  // ── DM Modal ─────────────────────────────────────────────────────────────
+  // ── DM Options (inbox or new message) ────────────────────────────────────
+  function openDMOptions() {
+    const choice = confirm('Click OK to view your message inbox\nClick Cancel to send a new message to faculty');
+    if (choice) {
+      window.location.href = '/dm_chat';
+    } else {
+      openDMModal();
+    }
+  }
+
+  // ── DM Modal ──────────────────────────────────────────────────────────────
   async function openDMModal() {
     document.getElementById('dmModal').classList.remove('hidden');
     document.getElementById('step1').classList.remove('hidden');
     document.getElementById('step2').classList.add('hidden');
     document.getElementById('step3').classList.add('hidden');
 
-    // Load faculty list
-    const res  = await fetch('/api/faculty_list');
-    const data = await res.json();
-    const list = document.getElementById('facultyList');
+    try {
+      const res  = await fetch('/api/faculty_list');
+      const data = await res.json();
+      const list = document.getElementById('facultyList');
 
-    if (data.faculty.length === 0) {
-      list.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No faculty members registered yet.</p>';
-      return;
-    }
+      if (!data.faculty || data.faculty.length === 0) {
+        list.innerHTML = '<p style="color:var(--text-muted);font-size:13px;">No faculty members found.</p>';
+        return;
+      }
 
-    list.innerHTML = data.faculty.map(f => `
-      <div class="faculty-item" onclick="selectFaculty(${f.id}, '${f.name}')">
-        <div class="faculty-avatar">${f.name[0]}</div>
-        <div>
-          <p class="faculty-name">${f.name}</p>
-          <p class="faculty-email">${f.email}</p>
+      list.innerHTML = data.faculty.map(f => `
+        <div class="faculty-item" onclick="selectFaculty(${f.id}, '${f.name}')">
+          <div class="faculty-avatar">${f.name[0].toUpperCase()}</div>
+          <div>
+            <p class="faculty-name">${f.name}</p>
+            <p class="faculty-email">${f.email}</p>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `).join('');
+    } catch(err) {
+      document.getElementById('facultyList').innerHTML = '<p style="color:#f87171;">Error loading faculty.</p>';
+    }
   }
 
   function closeDMModal() {
@@ -223,24 +309,49 @@
   async function sendDM() {
     const message = document.getElementById('dmMessage').value.trim();
     if (!message) { alert('Please type a message!'); return; }
+    if (!selectedFacultyId) { alert('No faculty selected!'); return; }
 
-    const res  = await fetch('/api/send_dm', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ receiver_id: selectedFacultyId, message })
-    });
-    const data = await res.json();
+    try {
+      const res  = await fetch('/api/send_dm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ receiver_id: selectedFacultyId, message })
+      });
+      const data = await res.json();
 
-    if (data.success) {
-      document.getElementById('step2').classList.add('hidden');
-      document.getElementById('step3').classList.remove('hidden');
+      if (data.success) {
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step3').classList.remove('hidden');
+      } else {
+        alert('Failed: ' + data.message);
+      }
+    } catch(err) {
+      alert('Network error. Try again.');
     }
   }
 
-  // Close modal on overlay click
   document.getElementById('dmModal').addEventListener('click', function(e) {
     if (e.target === this) closeDMModal();
   });
+
+  function updateExamCountdown() {
+    const examDate = new Date({{ (dashboard.next_exam_date ~ ':00+05:30')|tojson }});
+    const now = new Date();
+    const diff = Math.max(0, examDate - now);
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    const seconds = Math.floor((diff / 1000) % 60);
+
+    document.getElementById('examCountdown').textContent = days === 1 ? '1 day' : `${days} days`;
+    document.getElementById('countdownHours').textContent = `${hours}h`;
+    document.getElementById('countdownMinutes').textContent = `${minutes}m`;
+    document.getElementById('countdownSeconds').textContent = `${seconds}s`;
+  }
+
+  updateExamCountdown();
+  setInterval(updateExamCountdown, 1000);
 </script>
 </body>
 </html>

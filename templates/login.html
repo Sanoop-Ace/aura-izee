@@ -10,55 +10,57 @@
 </head>
 <body>
 
-  <!-- ── Animated background ─────────────────────────────────────────── -->
-  <div class="bg-grid"></div>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
 
-  <!-- ── Auth card ────────────────────────────────────────────────────── -->
-  <div class="auth-wrapper">
+<div class="page-layout">
 
-    <!-- Brand -->
-    <!-- IZee College Header -->
-<div class="college-header">
-  <img src="/static/images/izee_logo.png" alt="IZee Logo" class="college-logo" />
-  <div class="college-info">
-    <p class="college-name">IZee Business School</p>
-    <p class="college-sub">Jigani Campus, Bengaluru</p>
-    <p class="college-detail">📍 Plot 325, Bommasandra-Jigani Link Rd, Karnataka 560105</p>
-    <p class="college-detail">📞 +91 80500 02929 &nbsp;·&nbsp; ✉️ admin@izeeinstitutions.com</p>
-    <p class="college-detail">🌐 izeeinstitutions.com &nbsp;·&nbsp; 🎓 Est. 2004 · 1500+ Students</p>
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="lp-content">
+      <div class="lp-aura-logo" aria-label="AURA logo" role="img">
+        <div class="lp-logo-ring"></div>
+        <svg viewBox="0 0 80 80" fill="none" aria-hidden="true">
+          <path d="M20 60L40 18L60 60" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M29 45H51" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="40" cy="40" r="5" fill="currentColor"/>
+        </svg>
+      </div>
+      <h1 class="lp-title">AURA</h1>
+      <p class="lp-subtitle">Artificial University<br/>Response Assistant</p>
+      <div class="lp-divider"></div>
+      <p class="lp-desc">Your 24/7 AI-powered college assistant. Get instant answers about exams, fees, admissions and more.</p>
+      <div class="lp-features">
+        <div class="lp-feature">🤖 AI Chatbot</div>
+        <div class="lp-feature">🧠 Study Assistant</div>
+        <div class="lp-feature">💬 Faculty DM</div>
+        <div class="lp-feature">📅 Exam Info</div>
+        <div class="lp-feature">💰 Fee Details</div>
+        <div class="lp-feature">🎓 Admissions</div>
+      </div>
+    </div>
+    <div class="lp-footer">
+      <div class="lp-footer-divider"></div>
+      <p class="lp-college">IZee Business School</p>
+      <p class="lp-campus">Jigani Campus, Bengaluru · Est. 2004</p>
+      <p class="lp-campus">1500+ Students · NAAC Accredited</p>
+    </div>
   </div>
-</div>
 
-<!-- AURA Branding -->
-<div class="brand">
-  <div class="brand-icon">
-    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2"/>
-      <path d="M12 26 L20 14 L28 26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M14.5 22h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      <circle cx="20" cy="20" r="2" fill="currentColor"/>
-    </svg>
-  </div>
-  <div class="brand-text">
-    <h1>AURA</h1>
-    <p>Artificial University Response Assistant</p>
-  </div>
-</div>
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
 
-    <!-- Tabs -->
     <div class="tab-bar">
       <button class="tab active" data-tab="login" onclick="switchTab('login')">Sign In</button>
       <button class="tab" data-tab="register" onclick="switchTab('register')">Register</button>
       <div class="tab-indicator" id="tabIndicator"></div>
     </div>
 
-    <!-- Alert message -->
     <div class="alert" id="alertBox" role="alert"></div>
 
-    <!-- ── LOGIN FORM ─────────────────────────────────────────────────── -->
+    <!-- LOGIN FORM -->
     <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)" novalidate>
       <div class="form-group">
         <label for="loginEmail">Email Address</label>
@@ -69,7 +71,6 @@
           <input type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="email" />
         </div>
       </div>
-
       <div class="form-group">
         <label for="loginPassword">Password</label>
         <div class="input-wrap">
@@ -82,21 +83,19 @@
           </button>
         </div>
       </div>
-
       <button type="submit" class="btn-primary" id="loginBtn">
         <span class="btn-text">Sign In</span>
         <span class="btn-loader" hidden>
           <svg class="spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-dasharray="30 70"/></svg>
         </span>
       </button>
-
       <p class="switch-text">
         Don't have an account? <a href="#" onclick="switchTab('register')">Create one →</a>
       </p>
     </form>
 
-    <!-- ── REGISTER FORM ──────────────────────────────────────────────── -->
-    <form class="auth-form hidden" id="registerForm" onsubmit="handleRegister(event)" novalidate>
+    <!-- REGISTER FORM -->
+    <form class="auth-form hidden" id="registerForm" onsubmit="handleSendOTP(event)" novalidate>
       <div class="form-group">
         <label for="regName">Full Name</label>
         <div class="input-wrap">
@@ -106,7 +105,6 @@
           <input type="text" id="regName" placeholder="John Doe" required autocomplete="name" />
         </div>
       </div>
-
       <div class="form-group">
         <label for="regEmail">Email Address</label>
         <div class="input-wrap">
@@ -116,9 +114,8 @@
           <input type="email" id="regEmail" placeholder="you@example.com" required autocomplete="email" />
         </div>
       </div>
-
       <div class="form-group">
-        <label for="regPassword">Password <small>(min 6 characters)</small></label>
+        <label for="regPassword">Password <small>(min 8 characters)</small></label>
         <div class="input-wrap">
           <span class="input-icon">
             <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="8" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 8V6a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="13" r="1.5" fill="currentColor"/></svg>
@@ -129,8 +126,7 @@
           </button>
         </div>
       </div>
-
-<div class="form-group">
+      <div class="form-group">
         <label>I am a</label>
         <div class="role-selector">
           <label class="role-option">
@@ -150,19 +146,70 @@
         </div>
       </div>
       <button type="submit" class="btn-primary" id="registerBtn">
-        <span class="btn-text">Create Account</span>
+        <span class="btn-text">Send Verification Code</span>
         <span class="btn-loader" hidden>
           <svg class="spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-dasharray="30 70"/></svg>
         </span>
       </button>
-
       <p class="switch-text">
         Already have an account? <a href="#" onclick="switchTab('login')">Sign in →</a>
       </p>
     </form>
 
-  </div><!-- end auth-wrapper -->
+    <!-- OTP BOX -->
+    <div id="otpBox" class="hidden">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;text-align:center;">
+        We sent a 6-digit code to <strong id="otpEmail"></strong>
+      </p>
+      <div class="form-group">
+        <label>Enter Verification Code</label>
+        <div class="input-wrap">
+          <input type="text" id="otpInput" placeholder="000000" maxlength="6"
+            style="text-align:center;font-size:1.5rem;letter-spacing:0.5rem;font-weight:700;" />
+        </div>
+      </div>
+      <button class="btn-primary" onclick="handleVerifyOTP()" id="verifyBtn" style="margin-top:12px;">
+        <span class="btn-text">Verify & Create Account</span>
+        <span class="btn-loader" hidden>
+          <svg class="spin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-dasharray="30 70"/></svg>
+        </span>
+      </button>
+      <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:12px;">
+        Didn't receive it? <a href="#" onclick="resendOTP()" style="color:var(--accent2);">Resend code</a>
+      </p>
+      <p style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:8px;">
+        <a href="#" onclick="switchTab('register')" style="color:var(--accent2);">← Go back</a>
+      </p>
+    </div>
 
-  <script src="/static/js/auth.js"></script>
+    <section class="ai-showcase" aria-label="AURA AI showcase">
+      <div class="showcase-glow"></div>
+      <div class="lp-aura-logo showcase-aura-logo" aria-label="AURA logo" role="img">
+        <div class="lp-logo-ring"></div>
+        <svg viewBox="0 0 80 80" fill="none" aria-hidden="true">
+          <path d="M20 60L40 18L60 60" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M29 45H51" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+          <circle cx="40" cy="40" r="5" fill="currentColor"/>
+        </svg>
+      </div>
+      <p class="showcase-kicker">AI academic assistant</p>
+      <h2>Welcome to AURA</h2>
+      <p class="showcase-desc">
+        Your personal academic companion built to guide, assist, and support students with instant answers and AI-powered assistance.
+      </p>
+      <div class="showcase-features">
+        <div class="showcase-feature"><span>📚</span> Academic Support</div>
+        <div class="showcase-feature"><span>💬</span> Smart Conversations</div>
+        <div class="showcase-feature"><span>⚡</span> Instant Responses</div>
+        <div class="showcase-feature"><span>🔐</span> Secure Authentication</div>
+        <div class="showcase-feature"><span>🎓</span> Student Friendly</div>
+      </div>
+    </section>
+
+  </div><!-- end right-panel -->
+
+</div><!-- end page-layout -->
+
+<script src="/static/js/auth.js"></script>
 </body>
 </html>
